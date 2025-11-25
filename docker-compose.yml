@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  ai-api:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_NAME=mistralai/Mistral-7B-v0.1
+      - MAX_NEW_TOKENS=512
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./logs:/app/logs
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
